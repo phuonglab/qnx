@@ -1,1 +1,26 @@
-use tcp/ip socket in qnx
+*Use tcp/ip socket in qnx:
+
++getaddrinfo:get all socket we can get from this addr
+  getaddrinfo(NULL, PORT, &hints, &ai)
+  
++create socket from this infomation which is return from "ai" .After create socket, we can use bind or connect function  
+  for(p = ai; p != NULL; p = p->ai_next) {
+  		listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+  		if (listener < 0) {
+  			continue;
+  		}
+  
+  		// lose the pesky "address already in use" error message
+  		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+  
+  		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
+  			close(listener);
+  			continue;
+  		}
+  
+  		break;
+  	}
+  	
++release memory :
+  freeaddrinfo(ai);
++  
